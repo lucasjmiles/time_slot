@@ -52,7 +52,11 @@ class TimeItemCard extends StatelessWidget {
                 children: [
                   Icon(
                     icon,
-                    color: isSelected ? Colors.white : null,
+                    color: isDisabled
+                        ? Color.fromARGB(255, 153, 153, 153)
+                        : isSelected
+                            ? Colors.white
+                            : null,
                   ),
                   const SizedBox(
                     width: 5,
@@ -62,7 +66,11 @@ class TimeItemCard extends StatelessWidget {
             Text(
               DateFormat.jm(locale).format(time),
               style: TextStyle(
-                color: isSelected ? Colors.white : null,
+                color: isDisabled
+                    ? Color.fromARGB(255, 153, 153, 153)
+                    : isSelected
+                        ? Colors.white
+                        : null,
               ),
             ),
           ],
