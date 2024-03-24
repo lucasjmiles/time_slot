@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import '../controller/day_part_controller.dart';
 import '../controller/language_controller.dart';
 import 'time_item_card.dart';
+import 'package:intl/intl.dart';
 
 class TimeSlotGridView extends StatefulWidget {
   /// init time to sected.
@@ -64,6 +65,20 @@ class TimeSlotGridView extends StatefulWidget {
   /// ```
   final int crossAxisCount;
 
+  /// list of disabled times that match timeslots
+  ///
+  /// ```dart
+  /// disabledTimeSlots: null, //default value
+  /// ```
+  final List<String>? disabledTimeSlots;
+
+  /// color of disabled card time
+  ///
+  /// ```dart
+  /// disabledColor: Colors.white,
+  /// ```
+  final Color? disabledColor;
+
   const TimeSlotGridView({
     super.key,
     required this.initTime,
@@ -74,6 +89,8 @@ class TimeSlotGridView extends StatefulWidget {
     this.icon,
     this.selectedColor,
     this.unSelectedColor,
+    this.disabledTimeSlots,
+    this.disabledColor,
   });
 
   @override
@@ -93,8 +110,7 @@ class _TimeSlotGridViewState extends State<TimeSlotGridView> {
 
     Future.delayed(Duration.zero, () {
       setState(() {
-        slotTimes =
-            dayPartController.getSlotTimesListMap(listDates: widget.listDates);
+        slotTimes = dayPartController.getSlotTimesListMap(listDates: widget.listDates);
       });
     });
   }
@@ -106,8 +122,7 @@ class _TimeSlotGridViewState extends State<TimeSlotGridView> {
       physics: const NeverScrollableScrollPhysics(),
       itemCount: slotTimes.keys.length,
       itemBuilder: (context, index) {
-        final List<DateTime> listTimes =
-            slotTimes[slotTimes.keys.toList()[index]]!;
+        final List<DateTime> listTimes = slotTimes[slotTimes.keys.toList()[index]]!;
         return listTimes.isEmpty
             ? const SizedBox()
             : Column(
@@ -115,8 +130,7 @@ class _TimeSlotGridViewState extends State<TimeSlotGridView> {
                   // tiltle
                   ListTile(
                     title: Text(
-                      localeController!
-                          .translate(slotTimes.keys.toList()[index]),
+                      localeController!.translate(slotTimes.keys.toList()[index]),
                       style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
                     contentPadding: EdgeInsets.zero,
@@ -134,14 +148,15 @@ class _TimeSlotGridViewState extends State<TimeSlotGridView> {
                     itemCount: listTimes.length,
                     itemBuilder: (context, i) {
                       final DateTime time = listTimes[i];
+                      final String timeString = DateFormat.jm(widget.locale).format(time);
 
                       return TimeItemCard(
                         locale: widget.locale,
                         selectedColor: widget.selectedColor,
                         unSelectedColor: widget.unSelectedColor,
                         icon: widget.icon,
-                        isSelected: time.hour == widget.initTime.hour &&
-                            time.minute == widget.initTime.minute,
+                        isDisabled: widget.disabledTimeSlots != null ? widget.disabledTimeSlots!.contains(timeString) : false,
+                        isSelected: time.hour == widget.initTime.hour && time.minute == widget.initTime.minute,
                         time: time,
                         onChange: (value) {
                           widget.onChange(value);

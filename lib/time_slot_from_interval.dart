@@ -69,6 +69,20 @@ class TimesSlotGridViewFromInterval extends StatefulWidget {
   /// ```
   final int crossAxisCount;
 
+  /// list of disabled times that match timeslots
+  ///
+  /// ```dart
+  /// disabledTimeSlots: null, //default value
+  /// ```
+  final List<String>? disabledTimeSlots;
+
+  /// color of disabled card time
+  ///
+  /// ```dart
+  /// disabledColor: Colors.white,
+  /// ```
+  final Color? disabledColor;
+
   const TimesSlotGridViewFromInterval({
     super.key,
     required this.initTime,
@@ -79,15 +93,15 @@ class TimesSlotGridViewFromInterval extends StatefulWidget {
     this.icon,
     this.selectedColor,
     this.unSelectedColor,
+    this.disabledTimeSlots,
+    this.disabledColor,
   });
 
   @override
-  State<TimesSlotGridViewFromInterval> createState() =>
-      _TimesSlotGridViewFromIntervalState();
+  State<TimesSlotGridViewFromInterval> createState() => _TimesSlotGridViewFromIntervalState();
 }
 
-class _TimesSlotGridViewFromIntervalState
-    extends State<TimesSlotGridViewFromInterval> {
+class _TimesSlotGridViewFromIntervalState extends State<TimesSlotGridViewFromInterval> {
   /// to access DayPartController
   DayPartController dayPartController = DayPartController();
   LocaleController? localeController;
@@ -106,14 +120,11 @@ class _TimesSlotGridViewFromIntervalState
 
   void fullDataList() {
     ///difference in hours
-    final double differenceHours =
-        convertTimeOfDayToDoubel(widget.timeSlotInterval.end) -
-            convertTimeOfDayToDoubel(widget.timeSlotInterval.start);
+    final double differenceHours = convertTimeOfDayToDoubel(widget.timeSlotInterval.end) - convertTimeOfDayToDoubel(widget.timeSlotInterval.start);
     final double differenceMinute = differenceHours * 60;
 
     /// get count interval to for loop iteration
-    final int countInterval =
-        (differenceMinute / widget.timeSlotInterval.interval.inMinutes).round();
+    final int countInterval = (differenceMinute / widget.timeSlotInterval.interval.inMinutes).round();
 
     for (int i = 0; i < countInterval; i++) {
       setState(() {
@@ -141,6 +152,8 @@ class _TimesSlotGridViewFromIntervalState
       icon: widget.icon,
       selectedColor: widget.selectedColor,
       unSelectedColor: widget.unSelectedColor,
+      disabledColor: widget.disabledColor,
+      disabledTimeSlots: widget.disabledTimeSlots,
     );
   }
 
